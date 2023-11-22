@@ -15,16 +15,19 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // will work for https://localhost:3000/users
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  // same as above
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
+  // will work for https://localhost:3000/users/25
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
