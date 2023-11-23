@@ -4,29 +4,12 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'subject-empty': [0],
-    'references-empty': [2, 'never'],
-    'type-enum': [
-      2,
-      'always',
-      [
-        'feat',
-        'fix',
-        'docs',
-        'refactor',
-        'test',
-        'perf',
-        'chore',
-        'revert',
-        'ci',
-        'style',
-        'build',
-      ],
-    ],
+    'type-enum': [2, 'always', ['feat', 'fix', 'refactor', 'test', 'chore']],
   },
   parserPreset: {
     parserOpts: {
-      // RegExp pattern: type: RH-666: subject
-      headerPattern: '([a-z]*): (.*)$',
+      // RegExp pattern: type/subject(for example, feat/commitlint)
+      headerPattern: '([a-z]*)/(.*)$',
     },
   },
 };
