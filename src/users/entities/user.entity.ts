@@ -1,7 +1,9 @@
+import { Reservation } from 'src/reservation/entities/reservation.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,6 +19,11 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Reservation, (reservation) => reservation.user, {
+    onDelete: 'CASCADE',
+  })
+  reservations: Reservation[];
 
   @CreateDateColumn()
   cratedAt: Date;

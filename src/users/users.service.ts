@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,24 +12,37 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    this.usersRepository.insert(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const isExisting = await this.usersRepository.findBy({
+      email: createUserDto.email,
+    });
+
+    if (isExisting.length) {
+      throw new HttpException('Accommodation already exists', 403);
+    }
+
+    await this.usersRepository.insert(createUserDto);
     return createUserDto;
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.usersRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, @Req() updateUserDto: UpdateUserDto) {
+    return await this.usersRepository.update(id, {
+      email: updateUserDto.email,
+      password: updateUserDto.password,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }

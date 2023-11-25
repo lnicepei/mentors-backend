@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccommodationModule } from './accommodation/accommodation.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { BookingProviderModule } from './booking-provider/booking-provider.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,6 +28,9 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    BookingProviderModule,
+    ReservationModule,
+    AccommodationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
