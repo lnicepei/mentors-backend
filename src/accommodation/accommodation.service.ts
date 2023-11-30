@@ -1,9 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Observable, from, map } from 'rxjs';
-import { Like, Repository } from 'typeorm';
-import { CreateAccommodationDto } from './dto/create-accommodation.dto';
+import { FindOptionsOrder, Like, Repository } from 'typeorm';
+import {
+  CreateAccommodationDto,
+  TSearchOptions,
+  TSortOptions,
+} from './dto/create-accommodation.dto';
 import { UpdateAccommodationDto } from './dto/update-accommodation.dto';
 import { Accommodation } from './entities/accommodation.entity';
 
@@ -66,9 +70,26 @@ export class AccommodationService {
   }
 
   search(
-    options: IPaginationOptions,
+    options: TSearchOptions,
     q: string,
   ): Observable<Pagination<Accommodation>> {
+    const sortOptions: Record<TSortOptions, FindOptionsOrder<Accommodation>> = {
+      'price:asc': {
+        price: 'ASC',
+      },
+      'price:desc': {
+        price: 'DESC',
+      },
+      'rating:asc': {
+        rating: 'ASC',
+      },
+      'rating:desc': {
+        rating: 'DESC',
+      },
+    };
+
+    const sortQuery = sortOptions[options.sort];
+
     return from(
       this.accommodationRepository.findAndCount({
         skip: (Number(options.page) - 1) * Number(options.limit) || 0,
@@ -83,6 +104,7 @@ export class AccommodationService {
           'location',
         ],
         where: [{ name: Like(`%${q}%`) }, { description: Like(`%${q}%`) }],
+        order: sortQuery,
       }),
     ).pipe(
       map(([accommodations, totalAccommodations]) => {
