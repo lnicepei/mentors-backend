@@ -30,6 +30,9 @@ export type TSortOptions =
   | 'rating:asc'
   | 'rating:desc';
 
+export type TPriceOptions = `${number}-${number}`;
+
 export type TSearchOptions = IPaginationOptions & {
   sort: TSortOptions | '';
+  price: TPriceOptions;
 };

@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { AccommodationService } from './accommodation.service';
 import {
   CreateAccommodationDto,
+  TPriceOptions,
   TSortOptions,
 } from './dto/create-accommodation.dto';
 import { UpdateAccommodationDto } from './dto/update-accommodation.dto';
@@ -42,6 +43,7 @@ export class AccommodationController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Query('sort') sort: TSortOptions | '' = '',
+    @Query('price') price: TPriceOptions,
     @Query('q') q = '',
     @Req() request: Request,
   ): Observable<Pagination<Accommodation>> {
@@ -51,6 +53,7 @@ export class AccommodationController {
       {
         page: Number(page),
         limit: Number(limit),
+        price: price,
         route: `${request.protocol}://${request.get('Host')}${
           request.originalUrl
         }`,
