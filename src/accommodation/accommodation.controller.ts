@@ -13,6 +13,7 @@ import {
 import { Request } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
+import { ApiResponse } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { AccommodationService } from './accommodation.service';
 import { CreateAccommodationDto } from './dto/create-accommodation.dto';
@@ -23,17 +24,20 @@ import { Accommodation } from './entities/accommodation.entity';
 export class AccommodationController {
   constructor(private readonly accommodationService: AccommodationService) {}
 
+  @ApiResponse({ status: 200, type: Accommodation })
   @Post()
   create(@Body() createAccommodationDto: CreateAccommodationDto) {
     //TODO: add bookingProvider_id to keep track of bookingProvider's accommodations
     return this.accommodationService.create(createAccommodationDto);
   }
 
+  @ApiResponse({ status: 200, type: [Accommodation] })
   @Get()
   async findAll() {
     return this.accommodationService.findAll();
   }
 
+  @ApiResponse({ status: 200, type: Pagination<Accommodation> })
   @Get('search')
   index(
     @Query('page') page = 1,
