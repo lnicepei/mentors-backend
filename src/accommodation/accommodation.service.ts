@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Observable, from, map } from 'rxjs';
-import { FindOptionsOrder, Like, Repository } from 'typeorm';
+import { Between, FindOptionsOrder, Like, Repository } from 'typeorm';
 import {
   CreateAccommodationDto,
   TSearchOptions,
@@ -90,6 +90,10 @@ export class AccommodationService {
 
     const sortQuery = sortOptions[options.sort];
 
+    const [fromPrice, toPrice] = options?.price?.split('-') || [0, 0];
+
+    const myBetween = Between.bind(null, +fromPrice, +toPrice);
+
     return from(
       this.accommodationRepository.findAndCount({
         skip: (Number(options.page) - 1) * Number(options.limit) || 0,
@@ -103,7 +107,10 @@ export class AccommodationService {
           'provider',
           'location',
         ],
-        where: [{ name: Like(`%${q}%`) }, { description: Like(`%${q}%`) }],
+        where: [
+          { name: Like(`%${q}%`), price: myBetween() },
+          { description: Like(`%${q}%`), price: myBetween() },
+        ],
         order: sortQuery,
       }),
     ).pipe(
