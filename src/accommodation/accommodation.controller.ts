@@ -15,7 +15,10 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Observable } from 'rxjs';
 import { AccommodationService } from './accommodation.service';
-import { CreateAccommodationDto } from './dto/create-accommodation.dto';
+import {
+  CreateAccommodationDto,
+  TSortOptions,
+} from './dto/create-accommodation.dto';
 import { UpdateAccommodationDto } from './dto/update-accommodation.dto';
 import { Accommodation } from './entities/accommodation.entity';
 
@@ -38,6 +41,7 @@ export class AccommodationController {
   index(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
+    @Query('sort') sort: TSortOptions | '' = '',
     @Query('q') q = '',
     @Req() request: Request,
   ): Observable<Pagination<Accommodation>> {
@@ -50,6 +54,7 @@ export class AccommodationController {
         route: `${request.protocol}://${request.get('Host')}${
           request.originalUrl
         }`,
+        sort,
       },
       q,
     );
